@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>抖音自动上传助手</title>
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      padding: 15px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 20px;
+      color: #FE2C55;
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    label {
+      font-size: 14px;
+      color: #333;
+    }
+    input, textarea {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+    button {
+      background-color: #FE2C55;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #ea2a4f;
+    }
+    #status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 15px;
+    }
+    .tab {
+      padding: 8px 15px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      flex: 1;
+      text-align: center;
+    }
+    .tab.active {
+      border-bottom: 2px solid #FE2C55;
+      color: #FE2C55;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .excel-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+    #excelFileInfo {
+      font-size: 12px;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    .download-btn {
+      background-color: #4CD964;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    .download-btn:hover {
+      background-color: #3cbb52;
+    }
+    
+    /* 侧边栏特定样式 */
+    .progress-container {
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    .progress-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: #FE2C55;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+    }
+    .batch-list {
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .batch-item {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+    .batch-item:last-child {
+      border-bottom: none;
+    }
+    .batch-item.success {
+      border-left: 3px solid #4CD964;
+    }
+    .batch-item.error {
+      border-left: 3px solid #FF3B30;
+    }
+    .batch-item.pending {
+      border-left: 3px solid #FFCC00;
+    }
+    
+    /* 日志相关样式 */
+    .log-item {
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      border-left: 3px solid #666;
+    }
+    
+    .log-item.success {
+      background-color: #f1fbf3;
+      border-left-color: #4CD964;
+    }
+    
+    .log-item.error {
+      background-color: #fff5f5;
+      border-left-color: #FF3B30;
+    }
+    
+    .log-item.info {
+      background-color: #f5f9ff;
+      border-left-color: #007AFF;
+    }
+    
+    .log-time {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .log-message {
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>抖音自动上传助手</h1>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="single">单个上传</div>
+      <div class="tab" data-tab="excel">Excel批量</div>
+    </div>
+    
+    <div id="single-tab" class="tab-content active">
+      <div class="form-group">
+        <label>本地文件路径</label>
+        <input type="text" id="localFilePath" value="/Users/wangchangwei/Desktop/a.mp4" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label for="videoTitle">视频标题</label>
+        <input type="text" id="videoTitle" placeholder="请输入视频标题（默认自动生成）">
+      </div>
+      
+      <div class="form-group">
+        <label for="videoDescription">视频简介</label>
+        <textarea id="videoDescription" placeholder="请输入视频简介（默认自动生成）"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="publishDate">发布时间（格式：YYYY-MM-DD HH:MM）</label>
+        <input type="text" id="publishDate" placeholder="YYYY-MM-DD HH:MM">
+      </div>
+      
+      <button id="uploadBtn">上传并发布</button>
+    </div>
+    
+    <div id="excel-tab" class="tab-content">
+      <div class="form-group">
+        <label for="excelFile">选择Excel文件</label>
+        <button id="downloadExcelBtn" class="download-btn">下载Excel模板</button>
+        <input type="file" id="excelFile" accept=".xlsx,.xls">
+        <div class="excel-info">Excel文件需包含标题、简介、发布时间和视频路径列</div>
+        <div id="excelFileInfo"></div>
+      </div>
+      
+      <button id="uploadExcelBtn" disabled>批量上传</button>
+      
+      <div class="progress-container" id="batchProgressContainer" style="display: none;">
+        <div class="progress-title">批量上传进度</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-info">
+          <span id="progressText">0/0</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+          <button id="viewLogsBtn" style="background-color: #007AFF; flex: 1; margin-right: 5px;">查看日志</button>
+          <button id="stopBatchBtn" style="background-color: #FF3B30; flex: 1; margin-left: 5px;">停止上传</button>
+        </div>
+        <div class="batch-list" id="batchList">
+          <!-- 批量上传项将在这里动态添加 -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="status"></div>
+  </div>
+  
+  <!-- 日志模态框 -->
+  <div id="logModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 500px; max-height: 70vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0;">批量上传日志</h3>
+        <button onclick="document.getElementById('logModal').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+      </div>
+      <div id="logContent" style="max-height: 50vh; overflow-y: auto;">
+        <!-- 日志内容将在这里动态添加 -->
+      </div>
+      <div style="margin-top: 15px; text-align: right;">
+        <button onclick="document.getElementById('logModal').style.display='none'" style="background-color: #007AFF; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">关闭</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="xlsx.full.min.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html> 

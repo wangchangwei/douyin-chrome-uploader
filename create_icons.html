@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Create Icons</title>
+</head>
+<body>
+  <img id="svgImage" src="images/icon.svg" style="display: none;">
+  <canvas id="canvas16" width="16" height="16"></canvas>
+  <canvas id="canvas48" width="48" height="48"></canvas>
+  <canvas id="canvas128" width="128" height="128"></canvas>
+  
+  <div id="links" style="margin-top: 20px;"></div>
+  
+  <script>
+    window.onload = function() {
+      const svgImage = document.getElementById('svgImage');
+      
+      svgImage.onload = function() {
+        createIcon('canvas16', 16);
+        createIcon('canvas48', 48);
+        createIcon('canvas128', 128);
+      };
+      
+      function createIcon(canvasId, size) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(svgImage, 0, 0, size, size);
+        
+        const pngUrl = canvas.toDataURL('image/png');
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = pngUrl;
+        link.download = `icon${size}.png`;
+        link.textContent = `Download icon${size}.png`;
+        link.style.display = 'block';
+        link.style.margin = '10px';
+        
+        document.getElementById('links').appendChild(link);
+      }
+    };
+  </script>
+</body>
+</html> 

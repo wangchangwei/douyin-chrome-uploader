@@ -1,0 +1,9 @@
+{
+  "name": "com.douyin.uploader",
+  "description": "抖音视频上传本地应用",
+  "path": "/Users/wangchangwei/Documents/code/谷歌插件/douyin_upload/native-host/douyin_uploader.sh",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://YOUR_EXTENSION_ID_HERE/"
+  ]
+} 

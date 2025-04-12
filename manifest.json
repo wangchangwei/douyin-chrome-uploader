@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "抖音自动上传助手",
+  "version": "1.0",
+  "description": "在抖音创作者中心自动上传本地文件",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "debugger",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://creator.douyin.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://creator.douyin.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["xlsx.full.min.js"],
+      "matches": ["https://creator.douyin.com/*"]
+    }
+  ]
+} 
